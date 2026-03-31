@@ -6,7 +6,7 @@ logging.basicCongif(filename = "logs/pipeline.log",
                     level = logging.INFO,
                     message = "%(asctime)s - %(levelname)s - %(message)")
 
-def extract_air_quality_date():
+def extract_air_quality_data():
     try:
         loggign.info("Extracting air quality data...")
 
@@ -19,8 +19,8 @@ def extract_air_quality_date():
 
         return df
     except Exception as e:
-        logging.info(f"Error during data extraction {e}")
+        logging.error(f"Error during data extraction {e}")
         raise
-    
+
 
     
