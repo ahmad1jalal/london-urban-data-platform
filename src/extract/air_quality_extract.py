@@ -2,9 +2,9 @@ import pandas as pd
 import logging
 
 # setup logging
-logging.basicCongif(filename = "logs/pipeline.log",
+logging.basicConfig(filename = "logs/pipeline.log",
                     level = logging.INFO,
-                    message = "%(asctime)s - %(levelname)s - %(message)")
+                    format = "%(asctime)s - %(levelname)s - %(message)s")
 
 def extract_air_quality_data():
     try:
