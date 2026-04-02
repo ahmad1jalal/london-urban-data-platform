@@ -26,6 +26,12 @@ def transform_air_quality_data(df):
         # extracing the new feature
         df["month"] = df["readingdatetime"].dt.month
 
+        # interpolate the missing value because data is time-series
+        df["value"] = df["value"].interpolate("linear")
+
+        # validate the values..
+        df = df[df["value"].between(0,500)]
+        
         # aggregate the value on monthly basis
         df.groupby("month")["value"].mean()
 
