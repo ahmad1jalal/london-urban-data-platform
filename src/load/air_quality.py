@@ -33,7 +33,7 @@ def load_data(df):
 
         # let's make a query
         query = """
-        INSERT INTO air_quality(site,species,readingdatetime,value,units,status,month) VALUES %s
+        INSERT INTO air_quality(site,species,readingdatetime,value,units,provisional_or_ratified,month) VALUES %s
         """
 
         # let's execute the query
