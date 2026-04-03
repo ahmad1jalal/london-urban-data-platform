@@ -5,7 +5,7 @@ import logging
 # setup the logging
 logging.basicConfig(filename="logs/pipeline.log",
                     level = logging.INFO,
-                    format = "%(asctime)s - %(levelname)s -%(messsage)s")
+                    format = "%(asctime)s - %(levelname)s -%(message)s")
 
 def load_data(df):
     try : 
