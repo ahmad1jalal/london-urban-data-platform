@@ -1,5 +1,6 @@
 import pandas as pd
 import logging
+import os
 from datetime import datetime
 # setup logging
 logging.basicConfig(filename="logs/pipeline.log",
@@ -24,8 +25,9 @@ def extract_traffic_raw():
         logging.error(f"Error occur during extraction :{e}")
         raise
 
-def save_processed_traffic_data(df):
+def save_raw_traffic_data(df):
     try:
+        os.makedir("data/raw",exist_ok = True)
         file_name = f"data/raw/traffic_{datetime.now().date()}.csv"
         df.to_csv(file_name,index=False)
         logging.info("Traffic Raw data Saved Successfully")
