@@ -4,6 +4,7 @@ from src.transform.air_quality_transform import transform_air_quality_data,save_
 from src.load.air_quality import load_data
 from src.extract.traffic_raw_extract import extract_traffic_raw,save_raw_traffic_data
 from src.transform.traffic_transform import transform_data_traffic,save_transform
+from src.load.load_traffic import load_traffic_data
 
 
 
@@ -17,8 +18,9 @@ def run_pipeline():
     # load_data("./data/processed/air_quality_2026-04-01.csv")
     # df = extract_traffic_raw()
     # save_raw_traffic_data(df)
-    dt_traffic_transform = transform_data_traffic("./data/raw/traffic_2026-04-05.csv")
-    save_transform(dt_traffic_transform)
+    # dt_traffic_transform = transform_data_traffic("./data/raw/traffic_2026-04-05.csv")
+    # save_transform(dt_traffic_transform)
+    # load_traffic_data("./data/processed/traffic_2026-04-24.csv")
 
 
 if __name__  == "__main__":
