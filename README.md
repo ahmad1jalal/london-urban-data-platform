@@ -1,14 +1,13 @@
 # 🌍 London Urban Data Platform
+This project demonstrates real-world data engineering practices including ETL pipelines, data validation, and dimensional data modeling.
 
 ## 📌 Project Overview
 
-This project is a **production-style data engineering pipeline** that collects, processes, and analyzes urban data in London, focusing on **air quality**.
-
+This project is a **production-style data engineering pipeline** that collects, processes, and analyzes urban data in London, focusing on **air quality and traffic data integration**.
+The system evolves into a mini data warehouse using dimensional modeling (fact and dimension tables).
 The goal is to simulate a real-world data engineering system by building an end-to-end pipeline:
 
-* Extract → Transform → Load → Analyze
-
----
+Extract → Transform → Validate → Load → Data Warehouse → Analyze
 
 ## 🚀 Tech Stack
 
@@ -39,6 +38,25 @@ SQL Analysis
 ```
 
 ---
+## 🏗️ Data Warehouse Design
+
+The project uses a dimensional model:
+
+### Dimension Table
+**dim_location**
+- road_name
+- region_name
+- latitude, longitude
+
+### Fact Tables
+**fact_traffic**
+- datetime
+- traffic counts (cars, buses, etc.)
+
+**air_quality (planned upgrade → fact_air_quality)**
+- pollutant levels by site and time
+
+This structure improves scalability, query performance, and data consistency.
 
 ## 📂 Project Structure
 
@@ -86,19 +104,26 @@ london-urban-data-platform/
 * Aggregated and structured data
 
 ---
-
-### 3️⃣ Load
-
-* Data loaded into PostgreSQL database
-* Bulk insert using `execute_values`
-* Duplicate handling using `ON CONFLICT`
-* Indexed for performance
+### 3️⃣ Validate
+- Ensures data quality before loading
+- Checks for null values and invalid data
+- Prevents bad data entering the system
+  
+### 4️⃣ Load
+- Data loaded into PostgreSQL warehouse
+- Uses dimension and fact tables
+- Implements surrogate keys (location_id)
+- Bulk insert with conflict handling
 
 ---
 
-### 4️⃣ Analysis (SQL)
+## 🔥 Future Improvements
 
-Example queries:
+* Integrate air quality into warehouse (fact_air_quality)
+* Build analytical layer combining traffic + pollution
+* Add dashboard (Streamlit / Power BI)
+* Automate pipeline (Airflow)
+* Add data quality monitoring alerts
 
 #### 🔹 Top Polluted Sites
 
