@@ -21,3 +21,15 @@ JOIN fact_traffic AS f
 ON d.location_id = f.location_id
 GROUP BY d.road_name
 ORDER BY avg_traffic DESC;
+
+
+-- day vs night traffic trend
+SELECT 
+CASE 
+        WHEN EXTRACT(HOUR FROM datetime) BETWEEN 7 AND 19 THEN 'Day'
+        ELSE 'Night'
+    END AS period,
+AVG(total_vehicles) As avg_traffic
+FROM fact_traffic
+GROUP BY period;
+
