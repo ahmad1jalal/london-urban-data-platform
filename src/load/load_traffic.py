@@ -29,40 +29,40 @@ def load_traffic_data(df):
             cur = conn.cursor()
 
             # insert into dim_location
-
-            dim_location = df[[
-                "road_name",
-                "region_name",
-                "local_authority_name",
-                "latitude",
-                "longitude"
-            ]].drop_duplicates().values.tolist()
+            # insert into dim_location
+            location_data = [
+                (row["road_name"], "road")
+                for _, row in df[["road_name"]].drop_duplicates().iterrows()
+                ]
 
             location_query = """
-INSERT INTO dim_location (road_name, region_name, local_authority_name, latitude, longitude)
-VALUES %s
-ON CONFLICT (road_name, region_name, local_authority_name, latitude, longitude)
-DO NOTHING;
-"""
-            execute_values(cur,location_query,dim_location)
+            INSERT INTO dim_location(location_name, location_type)
+            VALUES %s
+            ON CONFLICT (location_name, location_type) DO NOTHING
+            """
 
+            execute_values(cur, location_query, location_data)
 
-            # fectch location ids
-            cur.execute("SELECT location_id,road_name,latitude,longitude FROM dim_location")
-            location_map = {
-                (row[1],row[2],row[3]) : row[0]
-                for row in cur.fetchall()
-            }
+            # fetch mapping
+            cur.execute("""
+                SELECT location_id, location_name
+                FROM dim_location
+                WHERE location_type = 'road'
+                """)
+
+            location_map = {row[1]: row[0] for row in cur.fetchall()}
+
+            # build fact
             fact_data = [
                 (
-                    location_map[(row["road_name"], row["latitude"], row["longitude"])],
-                    row["datetime"],
-                    row["cars_and_taxis"],
-                    row["buses_and_coaches"],
-                    row["all_hgvs"],
-                    row["all_motor_vehicles"]
-                )
-                for _, row in df.iterrows()
+                location_map[row["road_name"]],
+                row["count_date"],   # IMPORTANT FIX (not datetime)
+                row["cars_and_taxis"],
+                row["buses_and_coaches"],
+                row["all_hgvs"],
+                row["all_motor_vehicles"]
+            )
+            for _, row in df.iterrows()
             ]
             fact_query = """
             INSERT INTO fact_traffic (
