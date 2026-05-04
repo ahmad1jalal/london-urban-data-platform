@@ -13,19 +13,22 @@ def extract_air_quality():
         logging.info("Extracting air quality data from OpenAQ API (v3)")
 
         url = "https://api.openaq.org/v3/locations"
-
         params = {
-    "country": "GB",
-    "limit": 100
-}
-
+            "country": "GB",
+            "limit": 100
+        }
         headers = {
     "Accept": "application/json",
-    "X-API-Key": "1ba817b67617c083ffea376ac7d2f5390146b83648825f75cadfaf355816e007"   # <-- add this
+    "X-API-Key": "1ba817b67617c083ffea376ac7d2f5390146b83648825f75cadfaf355816e007"   
         }
 
-        response = requests.get(url, params=params, headers=headers, timeout=10)
-        response.raise_for_status()
+
+        response = requests.get(url, params=params,headers=headers, timeout=10)
+
+        # Debugging safety (important in real pipelines)
+        if response.status_code != 200:
+            logging.error(f"Bad response: {response.status_code} - {response.text}")
+            response.raise_for_status()
 
         json_data = response.json()
 
