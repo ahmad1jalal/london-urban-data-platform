@@ -2,62 +2,38 @@ import requests
 import pandas as pd
 import logging
 
-logging.basicConfig(
-    filename="logs/pipeline.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
-
-def extract_air_quality():
+def extract_air_quality_measurements():
     try:
-        logging.info("Extracting air quality data from OpenAQ API (v3)")
+        logging.info("Extracting real air quality measurements")
 
-        url = "https://api.openaq.org/v3/locations"
-        params = {
-            "country": "GB",
-            "limit": 100
-        }
-        headers = {
-    "Accept": "application/json",
-    "X-API-Key": "1ba817b67617c083ffea376ac7d2f5390146b83648825f75cadfaf355816e007"   
-        }
+        # Example site code (you will loop later)
+        url = "https://api.erg.ic.ac.uk/AirQuality/Data/Site/SiteCode=MY1/Json"
 
+        response = requests.get(url)
+        response.raise_for_status()
 
-        response = requests.get(url, params=params,headers=headers, timeout=10)
-
-        # Debugging safety (important in real pipelines)
-        if response.status_code != 200:
-            logging.error(f"Bad response: {response.status_code} - {response.text}")
-            response.raise_for_status()
-
-        json_data = response.json()
-
-        # v3 uses 'results' OR 'data' depending on endpoint version
-        data = json_data.get("results") or json_data.get("data")
-
-        if not data:
-            raise ValueError("No data found in API response")
+        data = response.json()
 
         records = []
 
-        for item in data:
-            coords = item.get("coordinates") or {}
+        # structure depends on pollutant series
+        measurements = data.get("AirQualityData", {}).get("Pollutant", [])
 
+        for m in measurements:
             records.append({
-                "site": item.get("name"),
-                "city": item.get("city"),
-                "country": item.get("country"),
-                "latitude": coords.get("latitude"),
-                "longitude": coords.get("longitude"),
-                "count": item.get("counts", {}).get("measurements")
+                "site": "MY1",
+                "datetime": m.get("@MeasurementDateGMT"),
+                "species": m.get("@Species"),
+                "value": m.get("@Value"),
+                "units": m.get("@Units")
             })
 
         df = pd.DataFrame(records)
 
-        logging.info(f"Extracted {len(df)} air quality locations")
+        logging.info(f"Extracted {len(df)} measurement rows")
 
         return df
 
     except Exception as e:
-        logging.exception(f"Error extracting air quality: {e}")
+        logging.error(f"Error: {e}")
         raise
