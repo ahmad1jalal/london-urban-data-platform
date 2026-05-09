@@ -77,3 +77,15 @@ AVG(value) AS avg_hourly_pollution
 FROM fact_air_quality
 GROUP BY hour
 ORDER BY avg_hourly_pollution DESC;
+
+
+-- traffic impact on pollution
+SELECT dl.location_name,
+AVG(faq.value) AS pollution,
+AVG(ft.total_vehicles) AS traffic
+FROM dim_location AS dl
+LEFT JOIN fact_air_quality AS faq
+ON dl.location_id = faq.location_id
+LEFT JOIN fact_traffic AS ft
+ON ft.location_id  = dl.location_id
+GROUP BY dl.location_name;
