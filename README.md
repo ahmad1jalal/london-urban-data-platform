@@ -182,6 +182,12 @@ ORDER BY avg_pollution DESC;
 * Implement data warehouse (fact/dimension tables)
 
 ---
+Key Insights
+Camden shows highest average air pollution levels
+Traffic volume correlates with pollution hotspots
+Peak pollution occurs during morning/evening hours
+Central London sites show consistently higher AQI
+
 
 ## ▶️ How to Run
 
